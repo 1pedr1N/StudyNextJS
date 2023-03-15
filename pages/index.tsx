@@ -1,10 +1,10 @@
-import { GetServerSideProps } from 'next'
+import { GetServerSideProps, GetStaticProps } from 'next'
 import Head from 'next/head'
 import { useEffect, useState } from 'react'
 
 
 
-export default function Home({repositories}) {
+export default function Home({repositories, date}) {
 
   return (
     <>
@@ -14,6 +14,7 @@ export default function Home({repositories}) {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
+      <h1>{date} </h1>
    <ul>
     {repositories.map((repo) => (
       <li key={repo} > {repo} </li>
@@ -24,7 +25,7 @@ export default function Home({repositories}) {
 }
 
 
-export const getServerSideProps: GetServerSideProps = async () => {
+export const getStaticProps: GetStaticProps = async () => {
   const response = await fetch(`https://api.github.com/users/1pedr1n/repos`)
 const data = await response.json();
  
@@ -33,7 +34,10 @@ const data = await response.json();
 
      return {
       props: {
-        repositories: repoNames
-      }
+        repositories: repoNames,
+        date: new Date().toISOString()
+      },
+      revalidate:5
+      
      }
     }
