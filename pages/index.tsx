@@ -1,8 +1,20 @@
 import Head from 'next/head'
+import { useEffect, useState } from 'react'
 
 
 
 export default function Home() {
+  const [repositories, setRepositories] = useState<string[]>([])
+  useEffect(() => {
+fetch(`https://api.github.com/users/1pedr1n/repos`  ).then(
+  response => response.json()
+).then(
+ ( data )=> {
+const repoNames = data.map(item => item.name)
+   setRepositories(repoNames)
+  }
+)
+  }, [])
   return (
     <>
       <Head>
@@ -11,9 +23,11 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-    <main>
-      <h1>Hello World</h1>
-    </main>
+   <ul>
+    {repositories.map((repo) => (
+      <li key={repo} > {repo} </li>
+    ))}
+   </ul>
     </>
   )
 }
